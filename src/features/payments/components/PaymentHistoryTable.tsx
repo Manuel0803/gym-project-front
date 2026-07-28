@@ -1,10 +1,13 @@
 import { useState } from 'react';
-import { PaymentHistoryTableProps } from '../interfaces/payments.interface';
+import { PaymentHistoryTableProps, Payment } from '../interfaces/payments.interface';
 import { paymentMethods } from '../constants/payment-methods.constant';
-import { CreditCard, ChevronLeft, ChevronRight } from 'lucide-react';
+import { CreditCard, ChevronLeft, ChevronRight, Edit2 } from 'lucide-react';
+import { Modal } from '@/common/components/ui/Modal';
+import { EditPaymentForm } from './EditPaymentForm';
 
 export function PaymentHistoryTable({ payments }: PaymentHistoryTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
   const itemsPerPage = 5;
 
   const totalPages = Math.ceil(payments.length / itemsPerPage);
@@ -80,9 +83,18 @@ export function PaymentHistoryTable({ payments }: PaymentHistoryTableProps) {
                   )}
                 </td>
                 <td className="py-4 text-right">
-                  <span className="px-2.5 py-1 rounded-md border border-success-main/30 bg-success-surface text-success-main text-[10px] font-bold tracking-widest uppercase">
-                    Pagado
-                  </span>
+                  <div className="flex items-center justify-end gap-3">
+                    <span className="px-2.5 py-1 rounded-md border border-success-main/30 bg-success-surface text-success-main text-[10px] font-bold tracking-widest uppercase">
+                      Pagado
+                    </span>
+                    <button
+                      onClick={() => setSelectedPayment(payment)}
+                      className="p-1.5 rounded-md text-text-muted hover:text-brand-main hover:bg-brand-main/10 transition-colors"
+                      title="Editar pago"
+                    >
+                      <Edit2 size={16} />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -96,6 +108,20 @@ export function PaymentHistoryTable({ payments }: PaymentHistoryTableProps) {
           </tbody>
         </table>
       </div>
+
+      <Modal
+        isOpen={!!selectedPayment}
+        onClose={() => setSelectedPayment(null)}
+        title="Editar Pago"
+      >
+        {selectedPayment && (
+          <EditPaymentForm
+            payment={selectedPayment}
+            onSuccess={() => setSelectedPayment(null)}
+            onCancel={() => setSelectedPayment(null)}
+          />
+        )}
+      </Modal>
 
       {totalPages > 1 && (
         <div className="flex items-center justify-between mt-6 px-2">

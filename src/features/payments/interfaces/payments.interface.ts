@@ -22,6 +22,13 @@ export interface CreatePaymentPayload {
   memberUuid: string;
 }
 
+export interface UpdatePaymentPayload {
+  paymentMethod?: PaymentMethod;
+  amountPaid?: number;
+  notes?: string;
+  date?: string;
+}
+
 export interface PaymentFormProps {
   memberName: string;
   memberSurname: string;
@@ -30,6 +37,12 @@ export interface PaymentFormProps {
   onSuccess: () => void;
   onCancel: () => void;
   isNewMember?: boolean;
+}
+
+export interface EditPaymentFormProps {
+  payment: Payment;
+  onSuccess: () => void;
+  onCancel: () => void;
 }
 
 export interface PaymentHistoryTableProps {

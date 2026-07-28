@@ -2,6 +2,7 @@ import { httpClient } from '@/core/api/axios.adapter';
 import {
   CreatePaymentPayload,
   Payment,
+  UpdatePaymentPayload,
 } from '../interfaces/payments.interface';
 import { PaginatedResult } from '@/common/interfaces/pagination.interface';
 
@@ -28,5 +29,12 @@ export class PaymentsService {
 
   static async create(payload: CreatePaymentPayload): Promise<Payment> {
     return await httpClient.post(this.ENDPOINT, payload);
+  }
+
+  static async update(
+    id: string,
+    payload: UpdatePaymentPayload
+  ): Promise<Payment> {
+    return await httpClient.patch(`${this.ENDPOINT}/${id}`, payload);
   }
 }
