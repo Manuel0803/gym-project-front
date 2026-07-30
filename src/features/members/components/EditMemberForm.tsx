@@ -60,9 +60,7 @@ export function EditMemberForm({ id }: { id: string }) {
         observations: member.observations || '',
         planUuid:
           member.subscriptions?.find((sub) => sub.status === 'ACTIVE')
-            ?.planUuid ||
-          member.subscriptions?.[0]?.planUuid ||
-          '',
+            ?.planUuid || '',
       });
     }
   }, [member, reset]);
@@ -72,20 +70,20 @@ export function EditMemberForm({ id }: { id: string }) {
   const canStackMore = activeSubsCount < 3;
 
   const watchPlanUuid = watch('planUuid');
-  const currentActiveSub =
-    member?.subscriptions?.find((sub) => sub.status === 'ACTIVE') ||
-    member?.subscriptions?.[0];
+  const currentActiveSub = member?.subscriptions?.find(
+    (sub) => sub.status === 'ACTIVE'
+  );
   const originalPlanUuid = currentActiveSub?.planUuid;
   const currentEndDate = currentActiveSub?.endDate;
 
   const onSubmit = (data: EditMemberFormValues) => {
     const payload = {
       ...data,
-      phoneNumber: data.phoneNumber || undefined,
-      observations: data.observations || undefined,
+      phoneNumber: data.phoneNumber,
+      observations: data.observations,
     };
 
-    if (payload.planUuid === originalPlanUuid) {
+    if (!payload.planUuid || payload.planUuid === originalPlanUuid) {
       delete (payload as any).planUuid;
     }
 
@@ -93,6 +91,7 @@ export function EditMemberForm({ id }: { id: string }) {
       { id, payload: payload as any },
       {
         onSuccess: () => {
+          router.refresh();
           router.push(`/dashboard/miembros/${id}`);
         },
       }
@@ -173,10 +172,12 @@ export function EditMemberForm({ id }: { id: string }) {
 
           <hr className="border-border-primary" />
           <div className="flex flex-col gap-6">
-
             {isAdmin && (
               <>
-                <h2 className="text-[15px] font-bold text-text-main">Membresía</h2><div className="flex flex-col gap-1.5">
+                <h2 className="text-[15px] font-bold text-text-main">
+                  Membresía
+                </h2>
+                <div className="flex flex-col gap-1.5">
                   <SelectField
                     label="Plan asignado"
                     registration={register('planUuid')}
@@ -207,7 +208,7 @@ export function EditMemberForm({ id }: { id: string }) {
                       </p>
                     )}
                 </div>
-                </>
+              </>
             )}
 
             <TextareaField

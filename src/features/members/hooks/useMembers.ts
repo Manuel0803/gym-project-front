@@ -61,8 +61,9 @@ export const useUpdateMember = () => {
       payload: UpdateMemberPayload;
     }) => MembersService.update(id, payload),
     onSuccess: (_, variables) => {
+      queryClient.removeQueries({ queryKey: ['member', variables.id] });
       queryClient.invalidateQueries({ queryKey: ['members'] });
-      queryClient.invalidateQueries({ queryKey: ['member', variables.id] });
+      
       toast.success('Miembro actualizado con éxito');
     },
     onError: (error: any) => {
@@ -81,7 +82,8 @@ export const useDeactivateMember = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => MembersService.deactivate(id),
-    onSuccess: () => {
+    onSuccess: (_, id) => {
+      queryClient.removeQueries({ queryKey: ['member', id] });
       queryClient.invalidateQueries({ queryKey: ['members'] });
       toast.success('Socio desactivado correctamente');
     },
