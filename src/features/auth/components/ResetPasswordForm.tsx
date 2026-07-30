@@ -88,7 +88,7 @@ export function ResetPasswordForm() {
       <button
         type="submit"
         disabled={isPending}
-        className="w-full bg-brand-main hover:bg-brand-hover text-white font-medium text-sm py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2 mt-4 shadow-md disabled:opacity-50"
+        className="w-full bg-brand-main hover:bg-brand-hover text-white font-medium text-sm py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2 mt-4 shadow-md disabled:opacity-50 cursor-pointer"
       >
         {isPending ? (
           <Loader2 size={16} className="animate-spin" />

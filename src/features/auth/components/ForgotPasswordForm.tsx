@@ -45,7 +45,7 @@ export function ForgotPasswordForm() {
         onError: (error: any) => {
           toast.error(
             error.response?.data?.message ||
-              'Ocurrió un error al intentar enviar el correo.'
+            'Ocurrió un error al intentar enviar el correo.'
           );
         },
       }
@@ -76,7 +76,7 @@ export function ForgotPasswordForm() {
           <button
             type="submit"
             disabled={isPending}
-            className="w-full bg-brand-main hover:bg-brand-hover text-white font-medium text-sm py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2 mt-2 shadow-md disabled:opacity-50"
+            className="w-full bg-brand-main hover:bg-brand-hover text-white font-medium text-sm py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2 mt-2 shadow-md disabled:opacity-50 cursor-pointer"
           >
             {isPending ? (
               <Loader2 size={16} className="animate-spin" />
@@ -86,6 +86,10 @@ export function ForgotPasswordForm() {
               </>
             )}
           </button>
+
+          <p className="text-xs text-text-main mb-4 transition-colors">
+            Si no recuerdas tu correo electrónico, contacta con un administrador de ChacuGym
+          </p>
         </form>
       ) : (
         <div className="flex flex-col items-center justify-center py-4 space-y-4">
@@ -98,7 +102,7 @@ export function ForgotPasswordForm() {
           </p>
           <button
             onClick={() => setIsSubmitted(false)}
-            className="text-xs font-bold text-text-muted hover:text-text-main transition-colors mt-4"
+            className="text-xs font-bold text-text-muted hover:text-text-main transition-colors mt-4 cursor-pointer"
           >
             ¿No recibiste el correo? Intenta de nuevo
           </button>
