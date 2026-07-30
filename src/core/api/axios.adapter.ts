@@ -1,14 +1,18 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { HttpAdapter } from './http.adapter';
+import { useAuthStore } from '@/features/auth/store/auth.store'; 
 
 export class AxiosAdapter implements HttpAdapter {
   private axiosInstance: AxiosInstance;
+  private isRefreshing = false;
+  private failedQueue: {
+    resolve: (value?: unknown) => void;
+    reject: (reason?: any) => void;
+  }[] = [];
 
   constructor() {
     this.axiosInstance = axios.create({
-      baseURL:
-        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1',
+      baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -16,35 +20,88 @@ export class AxiosAdapter implements HttpAdapter {
 
     this.axiosInstance.interceptors.request.use(
       (config) => {
-        if (typeof window !== 'undefined') {
-          const token = localStorage.getItem('jwt_token');
-
-          if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-          }
+        const token = useAuthStore.getState().token;
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
       },
-      (error) => {
-        return Promise.reject(error);
-      }
+      (error) => Promise.reject(error)
     );
 
     this.axiosInstance.interceptors.response.use(
-      (response) => {
-        return response;
-      },
-      (error) => {
-        if (error.response?.status === 401) {
-          if (typeof window !== 'undefined') {
-            localStorage.removeItem('jwt_token');
-            window.location.href = '/login';
+      (response) => response,
+      async (error: AxiosError) => {
+        const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+
+        if (error.response?.status === 401 && !originalRequest._retry) {
+          originalRequest._retry = true;
+
+          const { refreshToken, setTokens, setLogout } = useAuthStore.getState();
+
+          if (!refreshToken) {
+            this.forceLogout(setLogout);
+            return Promise.reject(error);
+          }
+
+          if (this.isRefreshing) {
+            return new Promise((resolve, reject) => {
+              this.failedQueue.push({ resolve, reject });
+            })
+              .then((token) => {
+                originalRequest.headers.Authorization = `Bearer ${token}`;
+                return this.axiosInstance(originalRequest);
+              })
+              .catch((err) => Promise.reject(err));
+          }
+
+          this.isRefreshing = true;
+
+          try {
+            const response = await axios.post<{ access_token: string; refresh_token: string }>(
+              `${this.axiosInstance.defaults.baseURL}/auth/refresh`,
+              { refreshToken }
+            );
+
+            const { access_token, refresh_token } = response.data;
+
+            setTokens(access_token, refresh_token);
+
+            this.processQueue(null, access_token);
+
+            originalRequest.headers.Authorization = `Bearer ${access_token}`;
+            return this.axiosInstance(originalRequest);
+            
+          } catch (refreshError) {
+            this.processQueue(refreshError, null);
+            this.forceLogout(setLogout);
+            return Promise.reject(refreshError);
+          } finally {
+            this.isRefreshing = false;
           }
         }
 
         return Promise.reject(error);
       }
     );
+  }
+
+  private processQueue(error: any, token: string | null = null) {
+    this.failedQueue.forEach((prom) => {
+      if (error) {
+        prom.reject(error);
+      } else {
+        prom.resolve(token);
+      }
+    });
+    this.failedQueue = [];
+  }
+
+  private forceLogout(setLogoutFn: () => void) {
+    if (typeof window !== 'undefined') {
+      setLogoutFn();
+      window.location.href = '/login';
+    }
   }
 
   async get<T>(url: string, config?: any): Promise<T> {
@@ -52,12 +109,12 @@ export class AxiosAdapter implements HttpAdapter {
     return response.data;
   }
 
-  async post<T>(url: string, data: any, config?: any): Promise<T> {
+  async post<T>(url: string, data?: any, config?: any): Promise<T> {
     const response = await this.axiosInstance.post<T>(url, data, config);
     return response.data;
   }
 
-  async put<T>(url: string, data: any, config?: any): Promise<T> {
+  async put<T>(url: string, data?: any, config?: any): Promise<T> {
     const response = await this.axiosInstance.put<T>(url, data, config);
     return response.data;
   }

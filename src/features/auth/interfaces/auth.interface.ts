@@ -8,6 +8,7 @@ export interface LoginPayload {
 
 export interface AuthResponse {
   access_token: string;
+  refresh_token: string;
   user: {
     uuid: string;
     name: string;
@@ -15,4 +16,9 @@ export interface AuthResponse {
     role: Roles;
     gymUuid: string;
   };
+}
+
+export interface RefreshResponse {
+  access_token: string;
+  refresh_token: string;
 }

@@ -27,4 +27,8 @@ export class AuthService {
     );
     return data;
   }
+
+  static async logout(): Promise<{ message: string }> {
+    return await httpClient.post<{ message: string }>('auth/logout');
+  }
 }
