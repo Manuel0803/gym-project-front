@@ -59,6 +59,7 @@ export function DeletePlanButton({
 
           <div className="flex justify-end gap-3 mt-4">
             <button
+              type='button'
               onClick={() => setIsDeleteModalOpen(false)}
               disabled={isDeleting}
               className="px-4 py-2 text-sm font-medium text-text-main border border-border-primary hover:bg-surface-hover transition-colors rounded cursor-pointer"
@@ -66,6 +67,7 @@ export function DeletePlanButton({
               Cancelar
             </button>
             <button
+              type='button'
               onClick={confirmDelete}
               disabled={isDeleting}
               className="px-4 py-2 text-sm font-medium text-white bg-danger-main hover:bg-danger-hover transition-colors rounded flex items-center gap-2 cursor-pointer"
