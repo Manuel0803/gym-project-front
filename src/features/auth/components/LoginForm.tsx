@@ -60,7 +60,7 @@ export function LoginForm() {
         labelRightElement={
           <Link
             href="/recuperar-contrasenia"
-            className="text-[10px] font-bold text-text-muted hover:text-text-main transition-colors"
+            className="text-[12px] font-bold text-text-muted hover:text-text-main transition-colors"
           >
             ¿Has olvidado la contraseña?
           </Link>
