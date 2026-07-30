@@ -9,6 +9,7 @@ import { EditPaymentFormProps } from '../interfaces/payments.interface';
 import { InputField } from '@/common/components/ui/InputField';
 import { SelectField } from '@/common/components/ui/SelectField';
 import { TextareaField } from '@/common/components/ui/TextareaField';
+import { getLocalDateString, getIsoWithLocalMidday } from '../utils/dates';
 
 export function EditPaymentForm({
   payment,
@@ -16,17 +17,6 @@ export function EditPaymentForm({
   onCancel,
 }: EditPaymentFormProps) {
   const { mutate: updatePayment, isPending } = useUpdatePayment();
-
-  const getLocalDateString = (dateString?: string) => {
-    const d = dateString ? new Date(dateString) : new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-  };
-
-  const getIsoWithLocalMidday = (dateString: string) => {
-    const [year, month, day] = dateString.split('-');
-    const d = new Date(Number(year), Number(month) - 1, Number(day), 12, 0, 0);
-    return d.toISOString();
-  };
 
   const {
     register,
