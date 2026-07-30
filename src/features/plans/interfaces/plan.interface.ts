@@ -4,6 +4,7 @@ export interface Plan {
   price: number;
   durationDays: number;
   description?: string;
+  isActive?: boolean;
 }
 
 export interface CreatePlanPayload {
@@ -19,4 +20,4 @@ export interface DeletePlanButtonProps {
   disabled?: boolean;
 }
 
-export type UpdatePlanPayload = Partial<CreatePlanPayload>;
+export type UpdatePlanPayload = Partial<CreatePlanPayload> & { isActive?: boolean };

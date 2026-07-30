@@ -32,9 +32,12 @@ export const useCreatePlan = () => {
       toast.success('Plan creado con éxito');
     },
     onError: (error: any) => {
-      const message =
-        error.response?.data?.message || 'Ocurrió un error al crear el plan';
-      toast.error(message);
+      const isInactive = error.response?.data?.isInactive;
+      const message = error.response?.data?.message || 'Ocurrió un error al crear el plan';
+      
+      if (!isInactive) {
+        toast.error(message);
+      }
     },
   });
 };
@@ -46,8 +49,10 @@ export const useUpdatePlan = () => {
     mutationFn: ({ id, payload }: { id: string; payload: UpdatePlanPayload }) =>
       PlansService.update(id, payload),
 
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['plans'] });
+      queryClient.invalidateQueries({ queryKey: ['plan', variables.id] });
+      
       toast.success('Plan actualizado con éxito');
     },
     onError: (error: any) => {
@@ -63,8 +68,11 @@ export const useDeletePlan = () => {
 
   return useMutation({
     mutationFn: (id: string) => PlansService.remove(id),
-    onSuccess: () => {
+    onSuccess: (_, id) => {
+      queryClient.cancelQueries({ queryKey: ['plan', id] });
+      
       queryClient.invalidateQueries({ queryKey: ['plans'] });
+      
       toast.success('Plan eliminado con éxito');
     },
     onError: (error: any) => {
