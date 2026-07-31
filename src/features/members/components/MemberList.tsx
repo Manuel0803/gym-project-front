@@ -19,7 +19,7 @@ export function MemberList({
   status,
   phoneNumber,
   observations,
-  birthdate,
+  planName
 }: MemberListProps) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
@@ -128,7 +128,7 @@ export function MemberList({
 
       <div className="min-w-0">
         <p className="text-sm font-medium text-text-main truncate">
-          {birthdate || '-'}
+          {planName || 'Sin plan'}
         </p>
       </div>
 

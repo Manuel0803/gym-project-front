@@ -100,7 +100,7 @@ export function MembersDirectory() {
               <h5 className="text-[10px] font-bold text-text-muted tracking-widest uppercase">ESTADO</h5>
               <h5 className="text-[10px] font-bold text-text-muted tracking-widest uppercase">TELÉFONO</h5>
               <h5 className="text-[10px] font-bold text-text-muted tracking-widest uppercase">OBSERVACIONES</h5>
-              <h5 className="text-[10px] font-bold text-text-muted tracking-widest uppercase">FECHA NAC.</h5>
+              <h5 className="text-[10px] font-bold text-text-muted tracking-widest uppercase">PLAN</h5>
               <h5 className="text-[10px] font-bold text-text-muted tracking-widest uppercase text-right">ACCIONES</h5>
             </div>
 
@@ -122,20 +122,23 @@ export function MembersDirectory() {
                 </div>
               )}
               {members.length > 0
-                ? members.map((member) => (
-                  <MemberList
-                    key={member.uuid}
-                    name={`${member.name} ${member.surname}`}
-                    memberID={member.dni}
-                    uuid={member.uuid}
-                    status={member.state as any}
-                    phoneNumber={member.phoneNumber || ''}
-                    observations={member.observations || ''}
-                    birthdate={new Date(
-                      member.birthDate
-                    ).toLocaleDateString()}
-                  />
-                ))
+                ? members.map((member) => {
+                    const activeSub = member.subscriptions?.find((sub) => sub.status === 'ACTIVE');
+                    const planName = activeSub?.plan?.name || 'Sin plan';
+
+                    return (
+                      <MemberList
+                        key={member.uuid}
+                        name={`${member.name} ${member.surname}`}
+                        memberID={member.dni}
+                        uuid={member.uuid}
+                        status={member.state as any}
+                        phoneNumber={member.phoneNumber || ''}
+                        observations={member.observations || ''}
+                        planName={planName}
+                      />
+                    );
+                  })
                 : !isLoading && (
                   <div className="flex-1 flex items-center justify-center py-10 text-sm text-text-muted">
                     No hay miembros que coincidan con los filtros.

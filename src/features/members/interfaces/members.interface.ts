@@ -41,7 +41,8 @@ export interface MemberListProps {
   status: 'Activo' | 'Vencido' | 'Inactivo' | string;
   phoneNumber: string;
   observations: string;
-  birthdate: string;
+  planName: string;
+  birthdate?: string;
 }
 
 export interface MemberProfileCardProps {
