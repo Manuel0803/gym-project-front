@@ -96,11 +96,11 @@ export function MembersDirectory() {
         <div className="overflow-x-auto">
           <div className="min-w-250">
             <div className="grid grid-cols-[2fr_1fr_1.5fr_2fr_1fr_50px] gap-4 items-center px-5 py-3 border-b border-border-primary bg-background min-w-225">
-              <h5 className="text-[10px] font-bold text-text-muted tracking-widest uppercase">NOMBRE E ID</h5>
+              <h5 className="text-[10px] font-bold text-text-muted tracking-widest uppercase">NOMBRE Y DNI</h5>
               <h5 className="text-[10px] font-bold text-text-muted tracking-widest uppercase">ESTADO</h5>
               <h5 className="text-[10px] font-bold text-text-muted tracking-widest uppercase">TELÉFONO</h5>
-              <h5 className="text-[10px] font-bold text-text-muted tracking-widest uppercase">OBSERVACIONES</h5>
               <h5 className="text-[10px] font-bold text-text-muted tracking-widest uppercase">PLAN</h5>
+              <h5 className="text-[10px] font-bold text-text-muted tracking-widest uppercase">OBSERVACIONES</h5> 
               <h5 className="text-[10px] font-bold text-text-muted tracking-widest uppercase text-right">ACCIONES</h5>
             </div>
 
@@ -109,7 +109,7 @@ export function MembersDirectory() {
                 <div className="flex flex-col items-center justify-center py-16 z-10">
                   <Loader2 className="w-8 h-8 text-brand-main animate-spin mb-3" />
                   <p className="text-text-muted text-sm">
-                    Cargando directorio de miembros...
+                    Cargando información de miembros...
                   </p>
                 </div>
               )}
@@ -117,7 +117,7 @@ export function MembersDirectory() {
                 <div className="absolute inset-0 bg-surface/80 flex flex-col items-center justify-center z-10 backdrop-blur-[1px]">
                   <Loader2 className="w-8 h-8 text-brand-main animate-spin mb-3" />
                   <p className="text-text-muted text-sm">
-                    Cargando directorio de miembros...
+                    Cargando información de miembros...
                   </p>
                 </div>
               )}
