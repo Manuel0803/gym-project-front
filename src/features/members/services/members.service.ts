@@ -49,4 +49,25 @@ export class MembersService {
   static async deactivate(id: string): Promise<Member> {
     return await httpClient.patch<Member>(`${this.ENDPOINT}/${id}/deactivate`); 
   }
+
+  static async renewPlan(
+    id: string,
+    payload: { planUuid: string; paymentMethod: string }
+  ): Promise<Member> {
+    return await httpClient.post<Member>(`${this.ENDPOINT}/${id}/renew`, payload);
+  }
+
+  static async changePlan(
+    id: string,
+    payload: {
+      newPlanUuid: string;
+      paymentMethod: string;
+      activationType: 'IMMEDIATE' | 'SCHEDULED';
+    }
+  ): Promise<Member> {
+    return await httpClient.post<Member>(
+      `${this.ENDPOINT}/${id}/change-plan`,
+      payload
+    );
+  }
 }
