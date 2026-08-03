@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { MemberListProps } from '../interfaces/members.interface';
 import {
   statusStyles,
@@ -24,6 +25,7 @@ export function MemberList({
   const [showDropdown, setShowDropdown] = useState(false);
   const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
   const { isAdmin } = useRole();
+  const router = useRouter();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -58,7 +60,8 @@ export function MemberList({
     };
   }, [showDropdown]);
 
-  const toggleDropdown = () => {
+  const toggleDropdown = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (!showDropdown && buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect();
       const dropdownHeight = isAdmin ? 110 : 70; 
@@ -82,6 +85,14 @@ export function MemberList({
     }
   };
 
+  const handleRowClick = () => {
+    router.push(`/dashboard/miembros/${uuid}`);
+  };
+
+  const handleMouseEnter = () => {
+    router.prefetch(`/dashboard/miembros/${uuid}`);
+  };
+
   const initials =
     name
       .split(' ')
@@ -91,7 +102,11 @@ export function MemberList({
       .toUpperCase() || 'NA';
 
   return (
-    <div className="grid grid-cols-[2fr_1fr_1.5fr_2fr_1fr_50px] gap-4 items-center px-5 py-4 border-b border-border-primary hover:bg-surface-hover transition-colors min-w-225">
+    <div 
+      onClick={handleRowClick}
+      onMouseEnter={handleMouseEnter}
+      className="grid grid-cols-[2fr_1fr_1.5fr_2fr_1fr_50px] gap-4 items-center px-5 py-4 border-b border-border-primary hover:bg-surface-hover transition-colors min-w-225 cursor-pointer"
+    >
       
       <div className="min-w-0"> 
         <div className="flex items-center gap-3">
@@ -132,7 +147,7 @@ export function MemberList({
         </p>
       </div>
 
-      <div className="relative flex justify-end">
+      <div className="relative flex justify-end" onClick={(e) => e.stopPropagation()}>
         <button
           ref={buttonRef}
           onClick={toggleDropdown}
