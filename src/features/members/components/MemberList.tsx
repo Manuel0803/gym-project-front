@@ -136,14 +136,14 @@ export function MemberList({
       </div>
 
       <div className="min-w-0">
-        <p className="text-sm text-text-muted truncate">
-          {observations || '-'}
+        <p className="text-sm font-medium text-text-main truncate">
+          {planName || 'Sin plan'}
         </p>
       </div>
 
       <div className="min-w-0">
-        <p className="text-sm font-medium text-text-main truncate">
-          {planName || 'Sin plan'}
+        <p className="text-sm text-text-muted truncate">
+          {observations || '-'}
         </p>
       </div>
 
