@@ -94,20 +94,3 @@ export const useDeactivateMember = () => {
     },
   });
 };
-
-export const useDeleteMember = () => {
-  const queryClient = useQueryClient();
-  
-  return useMutation({
-    mutationFn: (id: string) => MembersService.remove(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['members'] });
-      toast.success('Socio eliminado definitivamente');
-    },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || 'Error al intentar eliminar el socio'
-      );
-    },
-  });
-};
