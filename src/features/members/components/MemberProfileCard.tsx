@@ -29,9 +29,6 @@ export function MemberProfileCard({
         <h2 className="text-xl font-bold text-text-main">
           {member.name} {member.surname}
         </h2>
-        <p className="text-sm text-text-muted mt-1">
-          Nacimiento: {new Date(member.birthDate).toLocaleDateString('es-ES')}
-        </p>
       </div>
 
       <div className="flex flex-col gap-6 border-t border-border-primary pt-6">
@@ -41,6 +38,14 @@ export function MemberProfileCard({
           </span>
           <span className="text-sm text-text-main">
             {member.phoneNumber || '-'}
+          </span>
+        </div>
+        <div className="flex flex-col gap-1">
+          <span className="text-xs text-text-muted font-bold uppercase tracking-wider">
+            Fecha de nacimiento
+          </span>
+          <span className="text-sm text-text-main">
+            {new Date(member.birthDate).toLocaleDateString('es-ES')}
           </span>
         </div>
         {member.observations && (
