@@ -245,7 +245,7 @@ export default function MemberDetailPage({
             </div>
           </div>
 
-          <PaymentHistoryTable payments={paymentHistory} />
+          <PaymentHistoryTable memberUuid={member.uuid} />
         </div>
       </div>
 
