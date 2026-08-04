@@ -35,7 +35,6 @@ export const useCreateMember = () => {
       MembersService.create(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['members'] });
-      toast.success('Miembro creado con éxito');
     },
     onError: (error: any) => {
       const message =
