@@ -84,7 +84,7 @@ export default function DashboardPage() {
           title="Miembros Activos"
           value={metrics.activeMembers.total.toLocaleString('es-AR')}
           icon={<Users size={16} className="text-text-muted" />}
-          trendText={getTrendText(metrics.activeMembers.trend || 0, 'este mes')}
+          trendText={getTrendText(metrics.activeMembers.trend || 0, 'en altas vs mes anterior')}
           trendIcon={
             <TrendingUp
               size={12}
