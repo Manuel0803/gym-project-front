@@ -7,6 +7,15 @@ import {
 import toast from 'react-hot-toast';
 import { AxiosError } from 'axios';
 
+import { useQuery } from '@tanstack/react-query';
+
+export const usePayments = (page: number, limit: number, memberUuid?: string, status?: string) => {
+  return useQuery({
+    queryKey: ['payments', page, limit, memberUuid, status],
+    queryFn: () => PaymentsService.getAll(page, limit, memberUuid, status),
+  });
+};
+
 export const useCreatePayment = () => {
   const queryClient = useQueryClient();
 
@@ -58,6 +67,23 @@ export const useUpdatePayment = () => {
       } else {
         toast.error(message);
       }
+    },
+  });
+};
+
+export const useDeletePayment = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => PaymentsService.remove(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['payments'] });
+      queryClient.invalidateQueries({ queryKey: ['member'] });
+      toast.success('Pago anulado con éxito');
+    },
+    onError: (error: AxiosError<any>) => {
+      const message = error.response?.data?.message || 'Ocurrió un error al anular el pago';
+      toast.error(message);
     },
   });
 };

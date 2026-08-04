@@ -12,6 +12,7 @@ export interface Payment {
   paymentMethod: PaymentMethod;
   amountPaid: number;
   notes?: string;
+  isVoided: boolean;
   memberUuid: string;
 }
 
