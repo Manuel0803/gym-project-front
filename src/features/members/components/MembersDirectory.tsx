@@ -9,8 +9,8 @@ import { ChevronRight, ChevronLeft, Loader2 } from 'lucide-react';
 
 export function MembersDirectory() {
   const [filter, setFilter] = useState<
-    'Todos' | 'ACTIVE' | 'INACTIVE' | 'SUSPENDED'
-  >('Todos');
+    'RELEVANT' | 'ACTIVE' | 'INACTIVE' | 'SUSPENDED'
+  >('RELEVANT');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
@@ -23,7 +23,8 @@ export function MembersDirectory() {
     setCurrentPage(1);
   }
 
-  const stateQuery = filter === 'Todos' ? undefined : filter;
+  const stateQuery = filter === 'RELEVANT' ? 'ACTIVE,SUSPENDED' : filter;
+  
   const { data: response, isLoading } = useMembers(
     currentPage,
     itemsPerPage,
@@ -54,12 +55,12 @@ export function MembersDirectory() {
           <div className="flex bg-surface border border-border-primary rounded-lg p-1">
             <button
               onClick={() => {
-                setFilter('Todos');
+                setFilter('RELEVANT');
                 setCurrentPage(1);
               }}
-              className={`px-4 py-1.5 text-[10px] font-bold rounded transition-colors tracking-wider uppercase cursor-pointer ${filter === 'Todos' ? 'bg-brand-main text-white ' : 'text-text-muted hover:text-text-main'}`}
+              className={`px-4 py-1.5 text-[10px] font-bold rounded transition-colors tracking-wider uppercase cursor-pointer ${filter === 'RELEVANT' ? 'bg-brand-main text-white ' : 'text-text-muted hover:text-text-main'}`}
             >
-              Todos
+              Frecuentes
             </button>
             <button
               onClick={() => {
@@ -68,16 +69,7 @@ export function MembersDirectory() {
               }}
               className={`px-4 py-1.5 text-[10px] font-bold rounded transition-colors tracking-wider uppercase cursor-pointer ${filter === 'ACTIVE' ? 'bg-brand-main text-white ' : 'text-text-muted hover:text-text-main'}`}
             >
-              Activo
-            </button>
-            <button
-              onClick={() => {
-                setFilter('INACTIVE');
-                setCurrentPage(1);
-              }}
-              className={`px-4 py-1.5 text-[10px] font-bold rounded transition-colors tracking-wider uppercase cursor-pointer ${filter === 'INACTIVE' ? 'bg-brand-main text-white ' : 'text-text-muted hover:text-text-main'}`}
-            >
-              Inactivo
+              Activos
             </button>
             <button
               onClick={() => {
@@ -86,7 +78,16 @@ export function MembersDirectory() {
               }}
               className={`px-4 py-1.5 text-[10px] font-bold rounded transition-colors tracking-wider uppercase cursor-pointer ${filter === 'SUSPENDED' ? 'bg-brand-main text-white ' : 'text-text-muted hover:text-text-main'}`}
             >
-              Suspendido
+              Suspendidos
+            </button>
+            <button
+              onClick={() => {
+                setFilter('INACTIVE');
+                setCurrentPage(1);
+              }}
+              className={`px-4 py-1.5 text-[10px] font-bold rounded transition-colors tracking-wider uppercase cursor-pointer ${filter === 'INACTIVE' ? 'bg-brand-main text-white ' : 'text-text-muted hover:text-text-main'}`}
+            >
+              Bajas
             </button>
           </div>
         </div>
