@@ -31,7 +31,6 @@ export interface CreateMemberPayload {
   phoneNumber?: string;
   state?: string;
   observations?: string;
-  planUuid: string;
 }
 
 export interface MemberListProps {

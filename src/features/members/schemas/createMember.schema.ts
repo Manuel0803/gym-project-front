@@ -35,7 +35,6 @@ export const createMemberSchema = z.object({
     .max(500, 'Las observaciones no pueden superar los 500 caracteres')
     .optional()
     .or(z.literal('')),
-  planUuid: z.string().min(1, 'El plan de membresía es obligatorio'),
 });
 
 export type MemberFormValues = z.infer<typeof createMemberSchema>;
