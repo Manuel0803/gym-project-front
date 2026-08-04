@@ -9,6 +9,8 @@ import { PaymentFormProps } from '../interfaces/payments.interface';
 import { InputField } from '@/common/components/ui/InputField';
 import { SelectField } from '@/common/components/ui/SelectField';
 import { TextareaField } from '@/common/components/ui/TextareaField';
+import { AlertCircle } from 'lucide-react';
+import { getIsoWithLocalMidday, getTodayLocalString } from '../utils/dates';
 
 export function PaymentForm({
   memberName,
@@ -17,7 +19,6 @@ export function PaymentForm({
   defaultAmount,
   onSuccess,
   onCancel,
-  isNewMember,
 }: PaymentFormProps) {
   const { mutate: createPayment, isPending } = useCreatePayment();
 
@@ -31,7 +32,7 @@ export function PaymentForm({
     defaultValues: {
       amount: defaultAmount || 0,
       method: 'CASH',
-      date: new Date().toISOString().split('T')[0],
+      date: getTodayLocalString(),
       notes: '',
     },
   });
@@ -43,6 +44,7 @@ export function PaymentForm({
         paymentMethod: data.method,
         amountPaid: data.amount,
         notes: data.notes || undefined,
+        date: data.date ? getIsoWithLocalMidday(data.date) : undefined, 
       },
       {
         onSuccess: () => {
@@ -58,26 +60,26 @@ export function PaymentForm({
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col gap-5 mt-2"
     >
-      <p className="text-sm text-text-muted -mt-4 mb-2">
-        Registre un nuevo pago para el miembro
-      </p>
-
-      {isNewMember && (
-        <div className="bg-brand-main/10 border border-brand-main/20 p-3 rounded-md mb-2">
-          <p className="text-xs text-brand-main font-medium">
-            Si no registra el pago ahora, el miembro quedará activo pero sin
-            pagos. Tendrá 5 días para registrarlo desde la vista de detalle, o
-            su estado pasará automáticamente a Inactivo.
-          </p>
+      <div className="bg-warning-main/10 border border-warning-main/20 p-4 rounded-lg flex flex-col gap-2 mb-2">
+        <div className="flex items-center gap-2 text-warning-main font-bold">
+          <AlertCircle size={18} />
+          <h3>Aviso Importante</h3>
         </div>
-      )}
+        <p className="text-xs text-text-main leading-relaxed">
+          Este formulario es <strong>solo para registrar pagos sueltos o adicionales</strong> (ej: bebidas, deudas previas, indumentaria).<br/>
+          <span className="text-danger-main font-medium block mt-1">
+            Registrar un pago aquí NO renovará el mes ni los días del socio.
+          </span>
+        </p>
+      </div>
 
       <div className="flex flex-col gap-2">
         <InputField
-          label="Miembro seleccionado"
+          label="Socio"
           type="text"
           disabled
           value={`${memberName} ${memberSurname}`}
+          className="bg-surface-hover text-text-muted"
         />
       </div>
 
@@ -112,9 +114,16 @@ export function PaymentForm({
         </SelectField>
       </div>
 
+      <InputField
+        label="Fecha del pago"
+        type="date"
+        registration={register('date')}
+        error={errors.date?.message}
+      />
+
       <TextareaField
-        label="Notas / Observaciones"
-        placeholder="Detalles adicionales del pago..."
+        label="Concepto / Observaciones"
+        placeholder="Ej: Pago por botella de agua..."
         registration={register('notes')}
         error={errors.notes?.message}
         rows={3}
@@ -136,7 +145,7 @@ export function PaymentForm({
           disabled={isPending}
           className="bg-brand-main text-white text-sm font-medium py-2.5 px-6 rounded-sm cursor-pointer hover:bg-brand-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isPending ? 'Procesando...' : 'Confirmar Pago'}
+          {isPending ? 'Procesando...' : 'Registrar Pago Extra'}
         </button>
       </div>
     </form>

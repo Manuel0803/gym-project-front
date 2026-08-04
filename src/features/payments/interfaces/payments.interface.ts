@@ -21,6 +21,7 @@ export interface CreatePaymentPayload {
   amountPaid: number;
   notes?: string;
   memberUuid: string;
+  date?: string;
 }
 
 export interface UpdatePaymentPayload {
