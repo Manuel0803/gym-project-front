@@ -281,7 +281,7 @@ export default function MemberDetailPage({
           <div className="flex justify-end gap-3 mt-6">
             <button onClick={() => setIsRenewModalOpen(false)} disabled={isSubmitting} className="px-4 py-2 text-sm font-bold text-text-muted hover:text-text-main transition-colors disabled:opacity-50 cursor-pointer">Cancelar</button>
             <button onClick={handleRenewPlan} disabled={isSubmitting} className="flex items-center justify-center gap-2 px-6 py-2 bg-brand-main text-white text-sm font-bold rounded-md hover:bg-opacity-90 transition-all disabled:opacity-70 disabled:cursor-not-allowed w-full sm:w-auto cursor-pointer hover:bg-brand-hover">
-              {isSubmitting ? <><Loader2 size={16} className="animate-spin" /> Procesando...</> : 'Confirmar Pago'}
+              {isSubmitting ? <><Loader2 size={16} className="animate-spin" /> Procesando...</> : 'Confirmar'}
             </button>
           </div>
         </div>
@@ -340,7 +340,7 @@ export default function MemberDetailPage({
           <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-border-primary">
             <button onClick={() => setIsChangePlanModalOpen(false)} disabled={isSubmitting} className="px-4 py-2 text-sm font-bold text-text-muted hover:text-text-main transition-colors disabled:opacity-50 cursor-pointer">Cancelar</button>
             <button onClick={handleChangePlan} disabled={isSubmitting || !selectedNewPlanUuid} className="flex items-center justify-center gap-2 px-6 py-2 bg-brand-main text-white text-sm font-bold rounded-md hover:bg-opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
-              {isSubmitting ? <><Loader2 size={16} className="animate-spin" /> Procesando...</> : 'Cobrar y Cambiar Plan'}
+              {isSubmitting ? <><Loader2 size={16} className="animate-spin" /> Procesando...</> : 'Confirmar y Cambiar Plan'}
             </button>
           </div>
         </div>

@@ -145,7 +145,7 @@ export function PaymentForm({
           disabled={isPending}
           className="bg-brand-main text-white text-sm font-medium py-2.5 px-6 rounded-sm cursor-pointer hover:bg-brand-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isPending ? 'Procesando...' : 'Registrar Pago Extra'}
+          {isPending ? 'Procesando...' : 'Registrar Pago'}
         </button>
       </div>
     </form>
