@@ -1,17 +1,18 @@
 import * as z from 'zod';
 
 export const configGeneralSchema = z.object({
-  nombreGimnasio: z
+  gymName: z
     .string()
     .trim()
     .min(2, 'El nombre debe tener al menos 2 caracteres')
     .max(100, 'Nombre demasiado largo'),
-  telefono: z
+  phoneNumber: z
     .string()
     .trim()
-    .min(8, 'Teléfono inválido')
-    .max(20, 'Teléfono muy largo'),
-  direccion: z
+    .regex(/^\+?[0-9\s-]{8,20}$/, 'Debe ser un teléfono válido (ej: +54 9 11 1234-5678)')
+    .optional()
+    .or(z.literal('')),
+  address: z
     .string()
     .trim()
     .min(5, 'La dirección es muy corta')

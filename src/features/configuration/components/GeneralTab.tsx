@@ -35,9 +35,9 @@ export function GeneralTab() {
   useEffect(() => {
     if (gymData) {
       reset({
-        nombreGimnasio: gymData.name,
-        telefono: gymData.phoneNumber || '',
-        direccion: gymData.address || '',
+        gymName: gymData.name,
+        phoneNumber: gymData.phoneNumber || '',
+        address: gymData.address || '',
       });
     }
   }, [gymData, reset]);
@@ -46,9 +46,9 @@ export function GeneralTab() {
     if (!gymUuid) return;
 
     const payload = {
-      name: data.nombreGimnasio,
-      phoneNumber: data.telefono,
-      address: data.direccion,
+      name: data.gymName,
+      phoneNumber: data.phoneNumber,
+      address: data.address,
     };
 
     updateGym(
@@ -91,24 +91,24 @@ export function GeneralTab() {
             label="Nombre del Gimnasio"
             type="text"
             disabled={!isAdmin || isProcessing}
-            registration={register('nombreGimnasio')}
-            error={errors.nombreGimnasio?.message}
+            registration={register('gymName')}
+            error={errors.gymName?.message}
           />
 
           <InputField
             label="Teléfono de Contacto"
             type="text"
             disabled={!isAdmin || isProcessing}
-            registration={register('telefono')}
-            error={errors.telefono?.message}
+            registration={register('phoneNumber')}
+            error={errors.phoneNumber?.message}
           />
 
           <InputField
             label="Dirección"
             type="text"
             disabled={!isAdmin || isProcessing}
-            registration={register('direccion')}
-            error={errors.direccion?.message}
+            registration={register('address')}
+            error={errors.address?.message}
             className="md:col-span-2"
           />
         </div>

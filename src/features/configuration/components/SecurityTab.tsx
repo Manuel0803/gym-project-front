@@ -16,6 +16,7 @@ import { toast } from 'react-hot-toast';
 export function SecurityTab() {
   const [showCurrentPass, setShowCurrentPass] = useState(false);
   const [showNewPass, setShowNewPass] = useState(false);
+  const [showConfirmPass, setShowConfirmPass] = useState(false);
 
   const userId = useAuthStore((state) => state.user?.uuid);
 
@@ -111,11 +112,21 @@ export function SecurityTab() {
 
           <InputField
             label="Confirmar Nueva Contraseña"
-            type="password"
+            type={showConfirmPass ? 'text' : 'password'}
             placeholder="••••••••"
             disabled={isPending}
             registration={register('confirmNewPassword')}
             error={errors.confirmNewPassword?.message}
+            rightElement={
+              <button
+                type="button"
+                disabled={isPending}
+                onClick={() => setShowConfirmPass(!showConfirmPass)}
+                className="text-text-muted hover:text-text-main disabled:opacity-50"
+              >
+                {showConfirmPass ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            }
           />
 
           <button
