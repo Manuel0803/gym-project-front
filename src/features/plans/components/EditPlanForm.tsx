@@ -84,21 +84,21 @@ export function EditPlanForm({ id }: { id: string }) {
           />
 
           <InputField
-            label="Precio"
-            type="text"
-            placeholder="0.00"
-            disabled={isProcessing}
-            registration={register('price', {
-              onChange: (e) => {
-                const rawValue = e.target.value.replace(/\D/g, '');
-                e.target.value = rawValue
-                  ? new Intl.NumberFormat('es-AR').format(Number(rawValue))
-                  : '';
-              },
-            })}
-            error={errors.price?.message}
-            icon={<span className="text-text-muted">$</span>}
-          />
+              label="Precio (Sin decimales)" 
+              type="text"
+              placeholder="15.000"
+              disabled={isProcessing}
+              registration={register('price', {
+                onChange: (e) => {
+                  const rawValue = e.target.value.replace(/[^0-9]/g, '');
+                  e.target.value = rawValue
+                    ? new Intl.NumberFormat('es-AR', { maximumFractionDigits: 0 }).format(Number(rawValue))
+                    : '';
+                },
+              })}
+              error={errors.price?.message}
+              icon={<span className="text-text-muted">$</span>}
+            />
         </div>
       </div>
 

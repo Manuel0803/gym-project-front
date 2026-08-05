@@ -88,15 +88,15 @@ export function NewPlanForm() {
             />
 
             <InputField
-              label="Precio"
+              label="Precio (Sin decimales)"
               type="text"
-              placeholder="0.00"
+              placeholder="15.000"
               disabled={isPending}
               registration={register('price', {
                 onChange: (e) => {
-                  const rawValue = e.target.value.replace(/\D/g, '');
+                  const rawValue = e.target.value.replace(/[^0-9]/g, '');
                   e.target.value = rawValue
-                    ? new Intl.NumberFormat('es-AR').format(Number(rawValue))
+                    ? new Intl.NumberFormat('es-AR', { maximumFractionDigits: 0 }).format(Number(rawValue))
                     : '';
                 },
               })}
