@@ -11,9 +11,6 @@ export const useAuthStore = create<AuthState>()(
       domain: null,
 
       setLogin: (data, domain) => {
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('jwt_token', data.access_token);
-        }
         set({ 
           token: data.access_token, 
           refreshToken: data.refresh_token, 
@@ -23,16 +20,10 @@ export const useAuthStore = create<AuthState>()(
       },
 
       setTokens: (accessToken: string, refreshToken: string) => {
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('jwt_token', accessToken);
-        }
         set({ token: accessToken, refreshToken });
       },
 
       setLogout: () => {
-        if (typeof window !== 'undefined') {
-          localStorage.removeItem('jwt_token');
-        }
         set({ token: null, refreshToken: null, user: null, domain: null });
       },
     }),
