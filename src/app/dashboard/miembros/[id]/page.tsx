@@ -67,6 +67,8 @@ export default function MemberDetailPage({
 
   const planName = activeSubscription?.plan?.name || 'Sin plan asignado';
 
+  const isCurrentPlanActive = activeSubscription?.plan?.isActive !== false;
+
   let daysRemaining = 0;
   let progressPercentage = 0;
   let nextDueDate = '-';
@@ -82,8 +84,6 @@ export default function MemberDetailPage({
     progressPercentage = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
     nextDueDate = end.toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric' });
   }
-
-  const paymentHistory = member.payments || [];
 
   const statusTranslations: Record<string, string> = { ACTIVE: 'ACTIVO', INACTIVE: 'INACTIVO', SUSPENDED: 'SUSPENDIDO' };
   const statusStyles: Record<string, string> = {
@@ -193,13 +193,19 @@ export default function MemberDetailPage({
               {activeSubscription && (
                 <button
                   onClick={() => setIsRenewModalOpen(true)}
-                  disabled={futureSubscriptions.length >= 2}
-                  className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-md font-bold text-sm transition-all hover:bg-brand-hover cursor-pointer ${
-                    futureSubscriptions.length >= 2
+                  disabled={futureSubscriptions.length >= 2 || !isCurrentPlanActive}
+                  className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-md font-bold text-sm transition-all ${
+                    !isCurrentPlanActive || futureSubscriptions.length >= 2
                       ? 'bg-surface-hover text-text-muted cursor-not-allowed border border-border-primary'
-                      : 'bg-brand-main text-white hover:bg-opacity-90 shadow-sm active:scale-95'
+                      : 'bg-brand-main text-white hover:bg-opacity-90 shadow-sm active:scale-95 cursor-pointer'
                   }`}
-                  title={futureSubscriptions.length >= 2 ? 'Límite máximo de planes' : 'Renovar y apilar mes'}
+                  title={
+                    !isCurrentPlanActive
+                      ? 'Este plan ya no se comercializa. Usa "Cambiar Plan".'
+                      : futureSubscriptions.length >= 2
+                      ? 'Límite máximo de planes programados'
+                      : 'Renovar y apilar mes'
+                  }
                 >
                   <RefreshCw size={16} />
                   Renovar
