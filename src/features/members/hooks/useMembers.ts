@@ -93,3 +93,33 @@ export const useDeactivateMember = () => {
     },
   });
 };
+
+export const useRenewPlan = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, payload }: { id: string; payload: any }) => 
+      MembersService.renewPlan(id, payload),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['member', variables.id] });
+      toast.success('¡Plan renovado y pago registrado con éxito!');
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Hubo un error al renovar el plan');
+    },
+  });
+};
+
+export const useChangePlan = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, payload }: { id: string; payload: any }) => 
+      MembersService.changePlan(id, payload),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['member', variables.id] });
+      toast.success('¡Plan modificado y pago registrado con éxito!');
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Hubo un error al cambiar el plan');
+    },
+  });
+};

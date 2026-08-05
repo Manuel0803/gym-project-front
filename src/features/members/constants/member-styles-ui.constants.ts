@@ -27,3 +27,15 @@ export const dotStyles: Record<string, string> = {
   Inactivo: 'bg-text-muted',
   Suspendido: 'bg-warning-main',
 };
+
+export const STATUS_TRANSLATIONS: Record<string, string> = { 
+  ACTIVE: 'ACTIVO', 
+  INACTIVE: 'INACTIVO', 
+  SUSPENDED: 'SUSPENDIDO' 
+};
+
+export const STATUS_STYLES: Record<string, string> = {
+  ACTIVE: 'border-success-main/30 bg-success-surface text-success-main',
+  INACTIVE: 'border-border-primary bg-surface-hover text-text-muted',
+  SUSPENDED: 'border-warning-main/30 bg-warning-surface text-warning-main',
+};
