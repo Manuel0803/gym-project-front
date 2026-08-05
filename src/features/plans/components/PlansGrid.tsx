@@ -73,7 +73,7 @@ export function PlansGrid() {
         return (
           <div
             key={plan.uuid}
-            className="flex flex-col border border-border-primary bg-surface rounded-lg"
+            className="flex flex-col border border-border-primary bg-surface rounded-lg hover:shadow-md hover:border-brand-main/30 transition-all duration-300"
           >
             <div className="flex flex-col gap-2 border-b border-border-primary p-6">
               <h2 className="text-xl font-bold text-text-main">{plan.name}</h2>
