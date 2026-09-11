@@ -31,7 +31,7 @@ export default function LoginPage() {
         <div className="mt-3 pt-2 border-t border-border-primary flex flex-col items-center gap-4 transition-colors">
           <div className="flex items-center justify-center gap-2 text-text-muted transition-colors">
             <span className="text-[10px] font-bold tracking-wider uppercase">
-              v1.2.0 - by Chacú.IO
+              v1.3.0 - by Chacú.IO
             </span>
           </div>
         </div>
