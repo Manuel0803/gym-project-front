@@ -12,7 +12,7 @@ export function MembersDirectory() {
     'RELEVANT' | 'ACTIVE' | 'INACTIVE' | 'SUSPENDED'
   >('RELEVANT');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
 
   const searchParams = useSearchParams();
   const q = searchParams.get('q') || undefined;
@@ -43,6 +43,9 @@ export function MembersDirectory() {
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
+
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
 
   if (isLoading && members.length === 0) {
     return <TableSkeleton />;
@@ -124,8 +127,20 @@ export function MembersDirectory() {
               )}
               {members.length > 0
                 ? members.map((member) => {
-                    const activeSub = member.subscriptions?.find((sub) => sub.status === 'ACTIVE');
+                    const activeSub = 
+                      member.subscriptions?.find(
+                        (sub) => sub.status === 'ACTIVE' && new Date(sub.startDate) <= now && new Date(sub.endDate) > now
+                      ) ||
+                      member.subscriptions?.find(
+                        (sub) => sub.status === 'ACTIVE' && new Date(sub.endDate) > now
+                      );
+                      
                     const planName = activeSub?.plan?.name || 'Sin plan';
+                    
+                    let dynamicState = member.state;
+                    if (dynamicState === 'ACTIVE' && !activeSub) {
+                      dynamicState = 'SUSPENDED';
+                    }
 
                     return (
                       <MemberList
@@ -133,7 +148,7 @@ export function MembersDirectory() {
                         name={`${member.name} ${member.surname}`}
                         memberID={member.dni}
                         uuid={member.uuid}
-                        status={member.state as any}
+                        status={dynamicState}
                         phoneNumber={member.phoneNumber || ''}
                         observations={member.observations || ''}
                         planName={planName}
