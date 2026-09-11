@@ -9,9 +9,10 @@ import {
   createMemberSchema,
   MemberFormValues,
 } from '@/features/members/schemas/createMember.schema';
+import { CreateMemberPayload, Member } from '../interfaces/members.interface';
 import { InputField } from '@/common/components/ui/InputField';
 import { TextareaField } from '@/common/components/ui/TextareaField';
-import { Phone, IdCard, UserPlus } from 'lucide-react';
+import { Phone, IdCard, UserPlus, HeartPulse } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export function NewMemberForm() {
@@ -31,23 +32,34 @@ export function NewMemberForm() {
       phoneNumber: '',
       birthDate: '',
       observations: '',
+      emergencyName: '',
+      emergencyPhone: '',
+      emergencyRelation: '',
     },
   });
 
   const onSubmit = (data: MemberFormValues) => {
-    const payload = {
+    const hasEmergency = !!(data.emergencyName && data.emergencyPhone && data.emergencyRelation);
+
+    const payload: CreateMemberPayload = {
       dni: data.dni,
       name: data.name,
       surname: data.surname,
       birthDate: data.birthDate,
       phoneNumber: data.phoneNumber || undefined,
       observations: data.observations || undefined,
+      emergencyContact: hasEmergency
+        ? {
+            name: data.emergencyName as string,
+            phoneNumber: data.emergencyPhone as string,
+            relationship: data.emergencyRelation as string,
+          }
+        : null,
     };
 
-    createMemberMutation.mutate(payload as any, {
-      onSuccess: (response: any) => {
-        const memberUuid = response?.uuid || response?.data?.uuid;
-        
+    createMemberMutation.mutate(payload, {
+      onSuccess: (response: Member) => {
+        const memberUuid = response.uuid;
         toast.success('Miembro registrado. Por favor, asígnale un plan para activarlo.', { id: 'create-member' });
         
         if (memberUuid) {
@@ -69,11 +81,8 @@ export function NewMemberForm() {
           <div className="flex flex-col gap-6">
             <div className="flex items-center gap-2">
               <UserPlus className="text-brand-main" size={20} />
-              <h2 className="text-[15px] font-bold text-text-main">
-                Ficha del Nuevo Miembro
-              </h2>
+              <h2 className="text-[15px] font-bold text-text-main">Ficha del Nuevo Miembro</h2>
             </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <InputField
                 label="DNI"
@@ -85,7 +94,6 @@ export function NewMemberForm() {
                 icon={<IdCard size={14} className="text-text-muted" />}
                 className="md:col-span-2"
               />
-
               <InputField
                 label="Nombre/s"
                 type="text"
@@ -93,7 +101,6 @@ export function NewMemberForm() {
                 registration={register('name')}
                 error={errors.name?.message}
               />
-
               <InputField
                 label="Apellido"
                 type="text"
@@ -102,7 +109,6 @@ export function NewMemberForm() {
                 error={errors.surname?.message}
               />
             </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <InputField
                 label="Fecha de Nacimiento"
@@ -111,7 +117,6 @@ export function NewMemberForm() {
                 registration={register('birthDate')}
                 error={errors.birthDate?.message}
               />
-
               <InputField
                 label="Teléfono (Opcional)"
                 type="tel"
@@ -127,10 +132,42 @@ export function NewMemberForm() {
           <hr className="border-border-primary" />
 
           <div className="flex flex-col gap-6">
-            <h2 className="text-[15px] font-bold text-text-main">
-              Información Médica / Adicional
-            </h2>
+            <div className="flex items-center gap-2">
+              <HeartPulse className="text-danger-main" size={20} />
+              <h2 className="text-[15px] font-bold text-text-main">Información de Emergencia (Opcional)</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <InputField
+                label="Nombre del Contacto"
+                type="text"
+                disabled={isSubmitting}
+                registration={register('emergencyName')}
+                error={errors.emergencyName?.message}
+              />
+              <InputField
+                label="Teléfono"
+                type="tel"
+                placeholder="+549..."
+                disabled={isSubmitting}
+                registration={register('emergencyPhone')}
+                error={errors.emergencyPhone?.message}
+                icon={<Phone size={14} className="text-text-muted" />}
+              />
+              <InputField
+                label="Parentesco"
+                type="text"
+                placeholder="Ej. Madre, Hermano"
+                disabled={isSubmitting}
+                registration={register('emergencyRelation')}
+                error={errors.emergencyRelation?.message}
+              />
+            </div>
+          </div>
 
+          <hr className="border-border-primary" />
+
+          <div className="flex flex-col gap-6">
+            <h2 className="text-[15px] font-bold text-text-main">Información Médica / Adicional</h2>
             <TextareaField
               label="Observaciones / Notas"
               placeholder="Excepciones físicas, condición. Datos relevantes"
