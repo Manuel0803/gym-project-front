@@ -35,6 +35,35 @@ export const editMemberSchema = z.object({
     .max(500, 'Las observaciones no pueden superar los 500 caracteres')
     .optional()
     .or(z.literal('')),
+  emergencyName: z.string().optional().or(z.literal('')),
+  emergencyPhone: z.string().optional().or(z.literal('')),
+  emergencyRelation: z.string().optional().or(z.literal('')),
+}).superRefine((data, ctx) => {
+  const hasEmergencyData = !!(data.emergencyName || data.emergencyPhone || data.emergencyRelation);
+  
+  if (hasEmergencyData) {
+    if (!data.emergencyName || data.emergencyName.length < 2) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'El nombre es obligatorio',
+        path: ['emergencyName'],
+      });
+    }
+    if (!data.emergencyPhone || !/^\+?[0-9]{10,15}$/.test(data.emergencyPhone)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Teléfono inválido (10 a 15 dígitos)',
+        path: ['emergencyPhone'],
+      });
+    }
+    if (!data.emergencyRelation || data.emergencyRelation.length < 2) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'El parentesco es obligatorio',
+        path: ['emergencyRelation'],
+      });
+    }
+  }
 });
 
 export type EditMemberFormValues = z.infer<typeof editMemberSchema>;

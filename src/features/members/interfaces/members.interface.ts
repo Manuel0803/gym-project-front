@@ -10,6 +10,13 @@ export interface Subscription {
   plan?: Plan;
 }
 
+export interface EmergencyContact {
+  uuid?: string;
+  name: string;
+  phoneNumber: string;
+  relationship: string;
+}
+
 export interface Member {
   uuid: string;
   dni: string;
@@ -19,6 +26,7 @@ export interface Member {
   phoneNumber?: string;
   state: string;
   observations?: string;
+  emergencyContact?: EmergencyContact;
   subscriptions?: Subscription[];
   payments?: Payment[];
 }
@@ -31,6 +39,11 @@ export interface CreateMemberPayload {
   phoneNumber?: string;
   state?: string;
   observations?: string;
+  emergencyContact?: {
+    name: string;
+    phoneNumber: string;
+    relationship: string;
+  } | null;
 }
 
 export interface MemberListProps {
@@ -53,6 +66,7 @@ export interface MemberProfileCardProps {
     phoneNumber?: string;
     observations?: string;
     state?: string;
+    emergencyContact?: EmergencyContact;
   };
   displayStatus: string;
   safeStatusStyles: string;

@@ -1,7 +1,7 @@
 export const statusTranslations: Record<string, string> = {
   ACTIVE: 'Activo',
   INACTIVE: 'Inactivo',
-  SUSPENDED: 'Suspendido',
+  SUSPENDED: 'Vencido / Suspendido',
   Activo: 'Activo',
   Vencido: 'Vencido',
   Inactivo: 'Inactivo',
@@ -31,7 +31,7 @@ export const dotStyles: Record<string, string> = {
 export const STATUS_TRANSLATIONS: Record<string, string> = { 
   ACTIVE: 'ACTIVO', 
   INACTIVE: 'INACTIVO', 
-  SUSPENDED: 'SUSPENDIDO' 
+  SUSPENDED: 'VENCIDO / SUSPENDIDO' 
 };
 
 export const STATUS_STYLES: Record<string, string> = {
