@@ -40,21 +40,25 @@ export function MemberDetailClient({ id }: MemberDetailClientProps) {
   }
 
   const now = new Date();
-  const today = new Date(now);
-  today.setHours(0, 0, 0, 0);
   const nowMs = now.getTime();
+  
+  const startOfToday = new Date(now);
+  startOfToday.setHours(0, 0, 0, 0);
+
+  const endOfToday = new Date(now);
+  endOfToday.setHours(23, 59, 59, 999);
 
   const activeSubscription =
     member.subscriptions?.find(
-      (sub) => sub.status === 'ACTIVE' && new Date(sub.startDate) <= today && new Date(sub.endDate) > today
+      (sub) => sub.status === 'ACTIVE' && new Date(sub.startDate) <= endOfToday && new Date(sub.endDate) > startOfToday
     ) ||
     member.subscriptions?.find(
-      (sub) => sub.status === 'ACTIVE' && new Date(sub.endDate) > today
+      (sub) => sub.status === 'ACTIVE' && new Date(sub.endDate) > startOfToday
     );
 
   const futureSubscriptions =
     member.subscriptions
-      ?.filter((sub) => sub.status === 'ACTIVE' && new Date(sub.startDate) > today)
+      ?.filter((sub) => sub.status === 'ACTIVE' && new Date(sub.startDate) > endOfToday)
       .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()) || [];
 
   const planName = activeSubscription?.plan?.name || 'Sin plan asignado';

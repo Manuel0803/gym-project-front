@@ -101,7 +101,7 @@ export const useRenewPlan = () => {
       MembersService.renewPlan(id, payload),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['member', variables.id] });
-      toast.success('¡Plan renovado y pago registrado con éxito!');
+      toast.success('¡Plan renovado con éxito!');
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message || 'Hubo un error al renovar el plan');
@@ -116,7 +116,7 @@ export const useChangePlan = () => {
       MembersService.changePlan(id, payload),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['member', variables.id] });
-      toast.success('¡Plan modificado y pago registrado con éxito!');
+      toast.success('¡Plan modificado con éxito!');
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message || 'Hubo un error al cambiar el plan');

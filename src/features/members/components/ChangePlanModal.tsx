@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Modal } from '@/common/components/ui/Modal';
-import { Loader2, Calendar } from 'lucide-react';
+import { Loader2, Calendar, CreditCard } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useChangePlan } from '../hooks/useMembers';
 
@@ -21,6 +21,7 @@ export function ChangePlanModal({ isOpen, onClose, memberUuid, hasActiveSubscrip
   const [activationType, setActivationType] = useState<'IMMEDIATE' | 'SCHEDULED'>('IMMEDIATE');
   const [isRetroactive, setIsRetroactive] = useState(false);
   const [customStartDate, setCustomStartDate] = useState('');
+  const [registerPayment, setRegisterPayment] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -29,6 +30,7 @@ export function ChangePlanModal({ isOpen, onClose, memberUuid, hasActiveSubscrip
       setPaymentMethod('CASH');
       setIsRetroactive(false);
       setCustomStartDate('');
+      setRegisterPayment(false);
     }
   }, [isOpen, hasActiveSubscription]);
 
@@ -46,6 +48,7 @@ export function ChangePlanModal({ isOpen, onClose, memberUuid, hasActiveSubscrip
       newPlanUuid: selectedNewPlanUuid,
       paymentMethod,
       activationType,
+      registerPayment
     };
 
     if (isRetroactive && customStartDate) {
@@ -58,8 +61,6 @@ export function ChangePlanModal({ isOpen, onClose, memberUuid, hasActiveSubscrip
       { onSuccess: handleClose }
     );
   };
-
-  const selectedPlanDetails = plans?.find(p => p.uuid === selectedNewPlanUuid);
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title="Cambiar Plan de Membresía">
@@ -133,16 +134,34 @@ export function ChangePlanModal({ isOpen, onClose, memberUuid, hasActiveSubscrip
           </div>
         )}
 
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-bold text-text-main">Método de Pago</label>
-          <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)} disabled={isPending} className="w-full bg-background border border-border-primary text-text-main text-sm rounded-md focus:ring-brand-main focus:border-brand-main block p-2.5 outline-none transition-colors">
-            <option value="CASH">Efectivo</option>
-            <option value="DEBIT_CARD">Tarjeta de Débito</option>
-            <option value="CREDIT_CARD">Tarjeta de Crédito</option>
-            <option value="BANK_TRANSFER">Transferencia Bancaria</option>
-            <option value="MERCADO_PAGO">Mercado Pago</option>
-            <option value="OTHER">Otro</option>
-          </select>
+        <div className="flex flex-col gap-4 border border-border-primary rounded-lg p-4 bg-background">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input 
+              type="checkbox" 
+              checked={registerPayment}
+              onChange={(e) => setRegisterPayment(e.target.checked)}
+              disabled={isPending}
+              className="accent-brand-main w-4 h-4"
+            />
+            <span className="text-sm font-bold text-text-main flex items-center gap-2">
+              <CreditCard size={16} className="text-text-muted" />
+              Registrar pago automáticamente
+            </span>
+          </label>
+
+          {registerPayment && (
+            <div className="flex flex-col gap-2 pt-2 border-t border-border-primary animate-in fade-in zoom-in-95 duration-200">
+              <label className="text-sm font-bold text-text-main">Método de Pago</label>
+              <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)} disabled={isPending} className="w-full bg-surface border border-border-primary text-text-main text-sm rounded-md focus:ring-brand-main focus:border-brand-main block p-2.5 outline-none transition-colors">
+                <option value="CASH">Efectivo</option>
+                <option value="DEBIT_CARD">Tarjeta de Débito</option>
+                <option value="CREDIT_CARD">Tarjeta de Crédito</option>
+                <option value="BANK_TRANSFER">Transferencia Bancaria</option>
+                <option value="MERCADO_PAGO">Mercado Pago</option>
+                <option value="OTHER">Otro</option>
+              </select>
+            </div>
+          )}
         </div>
 
         <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-border-primary">

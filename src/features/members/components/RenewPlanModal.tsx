@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Modal } from '@/common/components/ui/Modal';
-import { Loader2, Calendar } from 'lucide-react';
+import { Loader2, Calendar, CreditCard } from 'lucide-react';
 import { useRenewPlan } from '../hooks/useMembers';
 
 interface Props {
@@ -17,6 +17,7 @@ export function RenewPlanModal({ isOpen, onClose, member, planName, planDuration
   const [paymentMethod, setPaymentMethod] = useState('CASH');
   const [isRetroactive, setIsRetroactive] = useState(false);
   const [customStartDate, setCustomStartDate] = useState('');
+  const [registerPayment, setRegisterPayment] = useState(false);
   
   const { mutate: renewPlan, isPending } = useRenewPlan();
 
@@ -25,13 +26,15 @@ export function RenewPlanModal({ isOpen, onClose, member, planName, planDuration
     setIsRetroactive(false);
     setCustomStartDate('');
     setPaymentMethod('CASH');
+    setRegisterPayment(false);
     onClose();
   };
 
   const handleRenew = () => {
     const payload: any = { 
       planUuid, 
-      paymentMethod 
+      paymentMethod,
+      registerPayment
     };
 
     if (isRetroactive && customStartDate) {
@@ -49,7 +52,7 @@ export function RenewPlanModal({ isOpen, onClose, member, planName, planDuration
     <Modal isOpen={isOpen} onClose={handleClose} title="Renovar Plan">
       <div className="flex flex-col gap-5">
         <p className="text-sm text-text-muted">
-          Estás por registrar un pago para renovar el plan actual. Se sumarán <strong>{planDuration} días</strong> adicionales a la suscripción de <strong>{member.name}</strong>.
+          Estás por renovar el plan actual. Se sumarán <strong>{planDuration} días</strong> adicionales a la suscripción de <strong>{member.name}</strong>.
         </p>
 
         <div className="bg-surface-hover border border-border-primary rounded-lg p-4 flex justify-between items-center">
@@ -58,7 +61,7 @@ export function RenewPlanModal({ isOpen, onClose, member, planName, planDuration
             <span className="font-bold text-text-main">{planName}</span>
           </div>
           <div className="flex flex-col items-end">
-            <span className="text-xs font-bold text-text-muted uppercase">A cobrar</span>
+            <span className="text-xs font-bold text-text-muted uppercase">Valor actual</span>
             <span className="text-xl font-bold text-brand-main">${defaultAmount.toLocaleString('es-AR')}</span>
           </div>
         </div>
@@ -93,16 +96,34 @@ export function RenewPlanModal({ isOpen, onClose, member, planName, planDuration
           )}
         </div>
 
-        <div className="flex flex-col gap-2 mt-1">
-          <label className="text-sm font-bold text-text-main">Método de Pago</label>
-          <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)} disabled={isPending} className="w-full bg-background border border-border-primary text-text-main text-sm rounded-md focus:ring-brand-main focus:border-brand-main block p-2.5 outline-none transition-colors disabled:opacity-50">
-            <option value="CASH">Efectivo</option>
-            <option value="DEBIT_CARD">Tarjeta de Débito</option>
-            <option value="CREDIT_CARD">Tarjeta de Crédito</option>
-            <option value="BANK_TRANSFER">Transferencia Bancaria</option>
-            <option value="MERCADO_PAGO">Mercado Pago</option>
-            <option value="OTHER">Otro</option>
-          </select>
+        <div className="flex flex-col gap-4 border border-border-primary rounded-lg p-4 bg-background">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input 
+              type="checkbox" 
+              checked={registerPayment}
+              onChange={(e) => setRegisterPayment(e.target.checked)}
+              disabled={isPending}
+              className="accent-brand-main w-4 h-4"
+            />
+            <span className="text-sm font-bold text-text-main flex items-center gap-2">
+              <CreditCard size={16} className="text-text-muted" />
+              Registrar pago automáticamente (Valor del plan: ${defaultAmount.toLocaleString('es-AR')})
+            </span>
+          </label>
+
+          {registerPayment && (
+            <div className="flex flex-col gap-2 pt-2 border-t border-border-primary animate-in fade-in zoom-in-95 duration-200">
+              <label className="text-sm font-bold text-text-main">Método de Pago</label>
+              <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)} disabled={isPending} className="w-full bg-surface border border-border-primary text-text-main text-sm rounded-md focus:ring-brand-main focus:border-brand-main block p-2.5 outline-none transition-colors disabled:opacity-50">
+                <option value="CASH">Efectivo</option>
+                <option value="DEBIT_CARD">Tarjeta de Débito</option>
+                <option value="CREDIT_CARD">Tarjeta de Crédito</option>
+                <option value="BANK_TRANSFER">Transferencia Bancaria</option>
+                <option value="MERCADO_PAGO">Mercado Pago</option>
+                <option value="OTHER">Otro</option>
+              </select>
+            </div>
+          )}
         </div>
 
         <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-border-primary">
