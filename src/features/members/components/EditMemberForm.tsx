@@ -13,9 +13,10 @@ import {
   EditMemberFormValues,
   editMemberSchema,
 } from '@/features/members/schemas/editMember.schema';
+import { UpdateMemberPayload } from '../interfaces/members.interface';
 import { InputField } from '@/common/components/ui/InputField';
 import { TextareaField } from '@/common/components/ui/TextareaField';
-import { Phone, IdCard, Loader2 } from 'lucide-react';
+import { Phone, IdCard, Loader2, HeartPulse } from 'lucide-react';
 
 export function EditMemberForm({ id }: { id: string }) {
   const router = useRouter();
@@ -36,6 +37,9 @@ export function EditMemberForm({ id }: { id: string }) {
       phoneNumber: '',
       birthDate: '',
       observations: '',
+      emergencyName: '',
+      emergencyPhone: '',
+      emergencyRelation: '',
     },
   });
 
@@ -50,19 +54,34 @@ export function EditMemberForm({ id }: { id: string }) {
           ? new Date(member.birthDate).toISOString().split('T')[0]
           : '',
         observations: member.observations || '',
+        emergencyName: member.emergencyContact?.name || '',
+        emergencyPhone: member.emergencyContact?.phoneNumber || '',
+        emergencyRelation: member.emergencyContact?.relationship || '',
       });
     }
   }, [member, reset]);
 
   const onSubmit = (data: EditMemberFormValues) => {
-    const payload = {
-      ...data,
-      phoneNumber: data.phoneNumber,
-      observations: data.observations,
+    const hasEmergency = !!(data.emergencyName && data.emergencyPhone && data.emergencyRelation);
+
+    const payload: UpdateMemberPayload = {
+      dni: data.dni,
+      name: data.name,
+      surname: data.surname,
+      birthDate: data.birthDate,
+      phoneNumber: data.phoneNumber || undefined,
+      observations: data.observations || undefined,
+      emergencyContact: hasEmergency
+        ? {
+            name: data.emergencyName as string,
+            phoneNumber: data.emergencyPhone as string,
+            relationship: data.emergencyRelation as string,
+          }
+        : null,
     };
 
     updateMemberMutation.mutate(
-      { id, payload: payload as any },
+      { id, payload },
       {
         onSuccess: () => {
           router.refresh();
@@ -146,8 +165,46 @@ export function EditMemberForm({ id }: { id: string }) {
           </div>
 
           <hr className="border-border-primary" />
+
+          <div className="flex flex-col gap-6">
+            <div className="flex items-center gap-2">
+              <HeartPulse className="text-danger-main" size={20} />
+              <h2 className="text-[15px] font-bold text-text-main">Información de Emergencia (Opcional)</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <InputField
+                label="Nombre del Contacto"
+                type="text"
+                disabled={isSubmitting}
+                registration={register('emergencyName')}
+                error={errors.emergencyName?.message}
+              />
+              <InputField
+                label="Teléfono"
+                type="tel"
+                placeholder="+549..."
+                disabled={isSubmitting}
+                registration={register('emergencyPhone')}
+                error={errors.emergencyPhone?.message}
+                icon={<Phone size={14} className="text-text-muted" />}
+              />
+              <InputField
+                label="Parentesco"
+                type="text"
+                placeholder="Ej. Madre, Hermano"
+                disabled={isSubmitting}
+                registration={register('emergencyRelation')}
+                error={errors.emergencyRelation?.message}
+              />
+            </div>
+          </div>
+
+          <hr className="border-border-primary" />
           
           <div className="flex flex-col gap-6">
+            <h2 className="text-[15px] font-bold text-text-main">
+              Información Médica / Adicional
+            </h2>
             <TextareaField
               label="Observaciones / Notas"
               placeholder="Excepciones físicas, condición. Datos relevantes"
@@ -168,7 +225,7 @@ export function EditMemberForm({ id }: { id: string }) {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex items-center justify-center gap-2 px-6 py-2.5 bg-brand-main hover:bg-brand-hover text-white rounded-sm text-sm font-medium transition-colors  disabled:opacity-50 cursor-pointer"
+              className="flex items-center justify-center gap-2 px-6 py-2.5 bg-brand-main hover:bg-brand-hover text-white rounded-sm text-sm font-medium transition-colors disabled:opacity-50 cursor-pointer"
             >
               {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
             </button>
