@@ -73,4 +73,8 @@ export interface MemberProfileCardProps {
   defaultAmount: number;
 }
 
+export interface MemberDetailClientProps {
+  id: string;
+}
+
 export type UpdateMemberPayload = Partial<CreateMemberPayload>;
