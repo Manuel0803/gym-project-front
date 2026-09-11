@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { MemberProfileCardProps } from '../interfaces/members.interface';
 import RegisterPaymentButton from '@/features/payments/components/RegisterPaymentButton';
-import { Pencil, User } from 'lucide-react';
+import { Pencil, User, HeartPulse } from 'lucide-react';
 
 export function MemberProfileCard({
   member,
@@ -26,7 +26,7 @@ export function MemberProfileCard({
         <div className="w-24 h-24 bg-background border border-border-primary rounded-full flex items-center justify-center mb-4 shadow-inner">
           <User size={40} className="text-text-muted" />
         </div>
-        <h2 className="text-xl font-bold text-text-main">
+        <h2 className="text-xl font-bold text-text-main text-center">
           {member.name} {member.surname}
         </h2>
       </div>
@@ -48,6 +48,26 @@ export function MemberProfileCard({
             {new Date(member.birthDate).toLocaleDateString('es-ES')}
           </span>
         </div>
+
+        {member.emergencyContact && (
+          <div className="flex flex-col gap-3 mt-2 p-3 bg-danger-main/5 border border-danger-main/20 rounded-md">
+            <div className="flex items-center gap-2">
+              <HeartPulse size={16} className="text-danger-main" />
+              <span className="text-xs font-bold text-danger-main uppercase tracking-wider">
+                Contacto de Emergencia
+              </span>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-sm font-bold text-text-main">
+                {member.emergencyContact.name} ({member.emergencyContact.relationship})
+              </span>
+              <span className="text-sm text-text-main">
+                {member.emergencyContact.phoneNumber}
+              </span>
+            </div>
+          </div>
+        )}
+
         {member.observations && (
           <div className="flex flex-col gap-1">
             <span className="text-xs text-text-muted font-bold uppercase tracking-wider">
