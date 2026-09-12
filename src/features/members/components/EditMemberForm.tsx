@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -16,12 +16,19 @@ import {
 import { UpdateMemberPayload } from '../interfaces/members.interface';
 import { InputField } from '@/common/components/ui/InputField';
 import { TextareaField } from '@/common/components/ui/TextareaField';
+import { ImageUpload } from '@/common/components/ui/ImageUpload';
+import { uploadImageToCloudinary } from '@/common/services/cloudinary.service';
 import { Phone, IdCard, Loader2, HeartPulse } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export function EditMemberForm({ id }: { id: string }) {
   const router = useRouter();
   const { data: member, isLoading } = useMember(id);
   const updateMemberMutation = useUpdateMember();
+
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imageDeleted, setImageDeleted] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   const {
     register,
@@ -61,37 +68,62 @@ export function EditMemberForm({ id }: { id: string }) {
     }
   }, [member, reset]);
 
-  const onSubmit = (data: EditMemberFormValues) => {
-    const hasEmergency = !!(data.emergencyName && data.emergencyPhone && data.emergencyRelation);
-
-    const payload: UpdateMemberPayload = {
-      dni: data.dni,
-      name: data.name,
-      surname: data.surname,
-      birthDate: data.birthDate,
-      phoneNumber: data.phoneNumber || undefined,
-      observations: data.observations || undefined,
-      emergencyContact: hasEmergency
-        ? {
-            name: data.emergencyName as string,
-            phoneNumber: data.emergencyPhone as string,
-            relationship: data.emergencyRelation as string,
-          }
-        : null,
-    };
-
-    updateMemberMutation.mutate(
-      { id, payload },
-      {
-        onSuccess: () => {
-          router.refresh();
-          router.push(`/dashboard/miembros/${id}`);
-        },
-      }
-    );
+  const handleImageSelect = (file: File | null) => {
+    setSelectedImage(file);
+    if (!file) {
+      setImageDeleted(true);
+    } else {
+      setImageDeleted(false);
+    }
   };
 
-  const isSubmitting = updateMemberMutation.isPending;
+  const onSubmit = async (data: EditMemberFormValues) => {
+    setIsUploading(true);
+    try {
+      let profileImageUrl: string | null | undefined = member?.profileImageUrl;
+
+      if (selectedImage) {
+        profileImageUrl = await uploadImageToCloudinary(selectedImage);
+      } else if (imageDeleted) {
+        profileImageUrl = null;
+      }
+
+      const hasEmergency = !!(data.emergencyName && data.emergencyPhone && data.emergencyRelation);
+
+      const payload: UpdateMemberPayload = {
+        dni: data.dni,
+        name: data.name,
+        surname: data.surname,
+        birthDate: data.birthDate,
+        phoneNumber: data.phoneNumber || undefined,
+        observations: data.observations || undefined,
+        profileImageUrl: profileImageUrl,
+        emergencyContact: hasEmergency
+          ? {
+              name: data.emergencyName as string,
+              phoneNumber: data.emergencyPhone as string,
+              relationship: data.emergencyRelation as string,
+            }
+          : null,
+      };
+
+      updateMemberMutation.mutate(
+        { id, payload },
+        {
+          onSuccess: () => {
+            router.refresh();
+            router.push(`/dashboard/miembros/${id}`);
+          },
+        }
+      );
+    } catch (error) {
+      toast.error('Error al procesar la imagen. Inténtalo de nuevo.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const isSubmitting = updateMemberMutation.isPending || isUploading;
 
   if (isLoading) {
     return (
@@ -113,6 +145,14 @@ export function EditMemberForm({ id }: { id: string }) {
             <h2 className="text-[15px] font-bold text-text-main">
               Identidad y Contacto
             </h2>
+
+            <div className="flex justify-center pb-4">
+              <ImageUpload 
+                currentImageUrl={member?.profileImageUrl}
+                onImageSelect={handleImageSelect} 
+                disabled={isSubmitting} 
+              />
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <InputField

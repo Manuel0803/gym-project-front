@@ -24,6 +24,7 @@ export interface Member {
   surname: string;
   birthDate: string;
   phoneNumber?: string;
+  profileImageUrl?: string | null;
   state: string;
   observations?: string;
   emergencyContact?: EmergencyContact;
@@ -39,6 +40,7 @@ export interface CreateMemberPayload {
   phoneNumber?: string;
   state?: string;
   observations?: string;
+  profileImageUrl?: string | null;
   emergencyContact?: {
     name: string;
     phoneNumber: string;
@@ -52,6 +54,7 @@ export interface MemberListProps {
   uuid: string;
   status: 'Activo' | 'Vencido' | 'Inactivo' | string;
   phoneNumber: string;
+  profileImageUrl?: string | null;
   observations: string;
   planName: string;
   birthdate?: string;
@@ -64,6 +67,7 @@ export interface MemberProfileCardProps {
     surname: string;
     birthDate: string;
     phoneNumber?: string;
+    profileImageUrl?: string | null;
     observations?: string;
     state?: string;
     emergencyContact?: EmergencyContact;
