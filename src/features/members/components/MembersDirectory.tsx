@@ -149,6 +149,7 @@ export function MembersDirectory() {
                         memberID={member.dni}
                         uuid={member.uuid}
                         status={dynamicState}
+                        profileImageUrl={member.profileImageUrl || ''}
                         phoneNumber={member.phoneNumber || ''}
                         observations={member.observations || ''}
                         planName={planName}

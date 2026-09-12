@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { MemberProfileCardProps } from '../interfaces/members.interface';
 import RegisterPaymentButton from '@/features/payments/components/RegisterPaymentButton';
 import { Pencil, User, HeartPulse } from 'lucide-react';
@@ -23,8 +24,18 @@ export function MemberProfileCard({
       </div>
 
       <div className="flex flex-col items-center mb-8 pt-4 border-t border-border-primary">
-        <div className="w-24 h-24 bg-background border border-border-primary rounded-full flex items-center justify-center mb-4 shadow-inner">
-          <User size={40} className="text-text-muted" />
+        <div className="w-24 h-24 bg-background border border-border-primary rounded-full flex items-center justify-center mb-4 shadow-inner relative overflow-hidden">
+          {member.profileImageUrl ? (
+            <Image
+              src={member.profileImageUrl}
+              alt={`Foto de ${member.name}`}
+              fill
+              sizes="96px"
+              className="object-cover"
+            />
+          ) : (
+            <User size={40} className="text-text-muted" />
+          )}
         </div>
         <h2 className="text-xl font-bold text-text-main text-center">
           {member.name} {member.surname}

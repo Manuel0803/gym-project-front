@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { MemberListProps } from '../interfaces/members.interface';
 import {
@@ -20,8 +21,9 @@ export function MemberList({
   status,
   phoneNumber,
   observations,
-  planName
-}: MemberListProps) {
+  planName,
+  profileImageUrl,
+}: MemberListProps & { profileImageUrl?: string }) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
   const { isAdmin } = useRole();
@@ -107,11 +109,20 @@ export function MemberList({
       onMouseEnter={handleMouseEnter}
       className="grid grid-cols-[2fr_1fr_1.5fr_2fr_1fr_50px] gap-4 items-center px-5 py-4 border-b border-border-primary hover:bg-surface-hover transition-colors min-w-225 cursor-pointer"
     >
-      
       <div className="min-w-0"> 
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 shrink-0 rounded-full bg-background border border-border-primary flex items-center justify-center text-xs font-bold text-text-muted">
-            {initials}
+          <div className="w-10 h-10 shrink-0 rounded-full bg-background border border-border-primary flex items-center justify-center text-xs font-bold text-text-muted relative overflow-hidden">
+            {profileImageUrl ? (
+              <Image 
+                src={profileImageUrl} 
+                alt={name} 
+                fill 
+                sizes="40px"
+                className="object-cover" 
+              />
+            ) : (
+              initials
+            )}
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-sm font-bold text-text-main truncate">{name}</p>
