@@ -4,7 +4,9 @@ import { DashboardMetrics } from '../interfaces/metrics.interface';
 export class DashboardService {
   private static readonly ENDPOINT = '/metrics';
 
-  static async getMetrics(): Promise<DashboardMetrics> {
-    return await httpClient.get<DashboardMetrics>(this.ENDPOINT);
+  static async getMetrics(year?: string): Promise<DashboardMetrics> {
+    const params = year && year !== 'rolling' ? { year } : undefined;
+    return await httpClient.get<DashboardMetrics>(this.ENDPOINT, { params });
   }
 }
+

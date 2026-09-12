@@ -6,4 +6,6 @@ export interface MetricCardProps {
   trendIcon: React.ReactNode;
   trendColor?: string;
   action?: React.ReactNode;
+  badge?: React.ReactNode;
 }
+
