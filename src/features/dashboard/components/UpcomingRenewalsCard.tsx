@@ -1,11 +1,11 @@
-import { RenewalItem } from './RenewalItem';
 import { UpcomingRenewal } from '../interfaces/metrics.interface';
+import { RenewalItem } from './RenewalItem';
 
-interface Props {
+interface UpcomingRenewalsCardProps {
   renewals: UpcomingRenewal[];
 }
 
-export function UpcomingRenewalsCard({ renewals }: Props) {
+export function UpcomingRenewalsCard({ renewals }: UpcomingRenewalsCardProps) {
   return (
     <div className="bg-surface border border-border-primary rounded-lg flex flex-col transition-colors overflow-hidden h-full">
       <div className="flex items-center justify-between p-5 border-b border-border-primary">
@@ -46,3 +46,4 @@ export function UpcomingRenewalsCard({ renewals }: Props) {
     </div>
   );
 }
+
