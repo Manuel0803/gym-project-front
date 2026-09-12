@@ -32,6 +32,7 @@ export function UpcomingRenewalsCard({ renewals }: UpcomingRenewalsCardProps) {
             renewals.map((renewal, index) => (
               <RenewalItem
                 key={renewal.id}
+                id={renewal.id}
                 initials={renewal.initials}
                 name={renewal.name}
                 plan={renewal.plan}
@@ -46,4 +47,3 @@ export function UpcomingRenewalsCard({ renewals }: UpcomingRenewalsCardProps) {
     </div>
   );
 }
-

@@ -27,6 +27,7 @@ export interface UpcomingRenewal {
 }
 
 export interface RenewalItemProps {
+  id: string;
   initials: string;
   name: string;
   plan: string;
