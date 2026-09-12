@@ -5,11 +5,14 @@ interface DashboardHeaderProps {
   onPeriodChange: (period: string) => void;
 }
 
+const currentYear = new Date().getFullYear();
+
 const PERIOD_OPTIONS = [
   { value: 'rolling', label: 'Últimos 12 meses' },
-  { value: '2026', label: '2026' },
-  { value: '2025', label: '2025' },
+  { value: String(currentYear), label: String(currentYear) },
+  { value: String(currentYear - 1), label: String(currentYear - 1) },
 ];
+
 
 export function DashboardHeader({
   selectedPeriod,

@@ -10,6 +10,7 @@ import {
   Calendar,
   Eye,
   EyeOff,
+  Lock,
 } from 'lucide-react';
 import { MetricCard } from './MetricCard';
 import { MetricCardProps } from '../interfaces/metric-card.interface';
@@ -20,6 +21,7 @@ interface DashboardKpiGridProps {
   metrics: DashboardMetrics;
   isRevenueVisible: boolean;
   onToggleRevenueVisible: () => void;
+  canViewRevenue?: boolean;
 }
 
 const renderTrendIcon = (trend?: number) => (
@@ -33,6 +35,7 @@ export function DashboardKpiGrid({
   metrics,
   isRevenueVisible,
   onToggleRevenueVisible,
+  canViewRevenue = true,
 }: DashboardKpiGridProps) {
   const [currentTime, setCurrentTime] = useState<string>('');
 
@@ -87,17 +90,28 @@ export function DashboardKpiGrid({
         ? `$${metrics.monthlyRevenue.total.toLocaleString('es-AR')}`
         : '****',
       icon: <Wallet size={16} className="text-brand-main transition-colors" />,
-      trendText: getTrendText(revenueTrend, 'vs último mes'),
-      trendIcon: renderTrendIcon(revenueTrend),
-      trendColor: getTrendColor(revenueTrend),
-      action: (
+      trendText: canViewRevenue
+        ? getTrendText(revenueTrend, 'vs último mes')
+        : 'Restringido',
+      trendIcon: canViewRevenue ? renderTrendIcon(revenueTrend) : undefined,
+      trendColor: canViewRevenue
+        ? getTrendColor(revenueTrend)
+        : 'text-text-muted',
+      action: canViewRevenue ? (
         <button
           onClick={onToggleRevenueVisible}
-          className="text-text-muted hover:text-text-main transition-colors ml-2"
+          className="text-text-muted hover:text-text-main transition-colors ml-2 cursor-pointer"
           title={isRevenueVisible ? 'Ocultar ingresos' : 'Mostrar ingresos'}
         >
           {isRevenueVisible ? <EyeOff size={14} /> : <Eye size={14} />}
         </button>
+      ) : (
+        <span
+          className="text-text-muted ml-2 cursor-not-allowed"
+          title="Visualización bloqueada para tu rol"
+        >
+          <Lock size={14} />
+        </span>
       ),
     },
     {
